@@ -5,7 +5,7 @@ outdir=$2
 
 if [[ $# -ne 2 ]]
 then
-    echo "usage: preprocess.sh input_dir output_dir"
+    echo "usage: sentencifiy.sh input_dir output_dir"
 else
     for file in $indir/*
         do

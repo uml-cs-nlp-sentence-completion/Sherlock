@@ -3,11 +3,9 @@ import os
 import sys
 import argparse
 import nltk
-import commands
 
 from os import path
 
-OUTPUT_DIR = './preprocessed'
 end_end_tags = ["End of Project Gutenberg's Etext", "End of Project Gutenberg Etext"]
 
 def preprocess_text(input_path, output_path):
@@ -31,21 +29,28 @@ def preprocess_text(input_path, output_path):
             continue
         content = content + line
 
-    content = content.strip().replace('\r\n', ' ')
+    in_file.close()
+
+    content = content.replace('\r\n', ' ')
     out_file.write(content)
     out_file.close()
 
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-i', '--input', dest="input", required=True, nargs="*", default="all", help="Input file names")
+    parser.add_argument('-i', '--input', dest="input", required=True, nargs="*", help="Input file names")
+    parser.add_argument('-o', '--outputdir', dest="output_dir", required=True, nargs=1, help="Output dir")
     
     args            = parser.parse_args()
-    all_files       = args.input
-    for file in all_files:
+    files           = args.input
+    
+    output_dir      = args.output_dir[0]
+
+    for file in files:
         if path.isfile(file):
             file_name = path.basename(file)
-            out_file = path.join(OUTPUT_DIR, file_name)
+            out_file = path.join(output_dir, file_name)
             print 'Processing %s' % file
             preprocess_text(file, out_file)
 

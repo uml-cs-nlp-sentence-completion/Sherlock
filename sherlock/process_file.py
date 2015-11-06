@@ -32,11 +32,12 @@ def process_sentences(sentences, options):
     
     for sentence in sentences:
         sentence = sentence.replace('\r\n', '').lower()
-        if len(sentence) >= 1:
-            for op in options:
+        for op in options:
+            if len(sentence.strip()) >= 1:
                 sentence = OPTIONS[op](sentence)
                 words = [w for w in sentence.split() if len(w) > 0]
                 sentence = " ".join(words)
+        if len(sentence.strip()) >= 1:
             processed_sents.append(sentence)
 
     return processed_sents

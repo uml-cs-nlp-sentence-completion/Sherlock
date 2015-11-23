@@ -60,7 +60,7 @@ function test_data() {
     count=$(($count + 1))
   done < $1/Holmes.lm_format.questions.txt
 
-  echo "Evaluating..."
+  echo "Computing scores..."
 
   echo -e $t_string  \
     | $CMU_DIR/evallm -binary $MOD_DIR/Simple4.binlm \

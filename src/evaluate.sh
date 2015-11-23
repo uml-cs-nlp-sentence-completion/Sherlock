@@ -7,8 +7,8 @@
 # using the bestoffive.pl file provided by the MSR test data. 
 #
 
-MSR_DIR=../data/MSR_Sentence_Completion_Challenge_V1
-TMP=../tmp
+MSR_DIR=data/MSR_Sentence_Completion_Challenge_V1
+TMP=tmp
 
 if [ ! -f "$1" ]
 then

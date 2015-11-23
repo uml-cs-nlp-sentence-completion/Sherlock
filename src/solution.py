@@ -7,7 +7,7 @@
                                                                               
  Creation Date : 01-11-2015
                                                                               
- Last Modified : Wed 04 Nov 2015 07:38:47 PM EST
+ Last Modified : Sat 21 Nov 2015 11:29:31 AM EST
                                                                               
  Created By : Renan Campos                                                    
                                                                               
@@ -42,10 +42,10 @@ class Solution:
     pass
 
   def evaluate(self):
-  """
-    Calculate the accuracy of the classifier. This will by default call the perl
-    script provided by the test data.
-  """
+    """
+      Calculate the accuracy of the classifier. This will by default call the perl
+      script provided by the test data.
+    """
     pass
 
    

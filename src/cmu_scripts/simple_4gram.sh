@@ -7,15 +7,13 @@
 # to zero) is incremented once for each bigram match, twice for each trigram
 # match, and three times for each four-gram match. Where a match means that the
 # test sentence contains the target word at least once in the background data.
+# NOTE: This script should only be called by 'sherlock' from the Sherlock dir.
 #
-#  > $TMP_DIR/$$.idngram \
-#  && \
-#  echo "here" && \
-#  $CMU_DIR/idngram2lm -idngram $TMP_DIR/$$.idngram -vocab $TMP_DIR/$$.vocab -n 4 \
-#  -binary $TMP_DIR/MSR.binlm \
 
-CMU_DIR="../bin/CMU-Cam_Toolkit_v2/bin"
-TMP_DIR="../tmp"
+CMU_DIR="bin/CMU-Cam_Toolkit_v2/bin"
+TMP_DIR="tmp"
+MOD_DIR="models"
+RES_DIR="results"
 
 function print_help() {
   echo "ERROR: invalid arguments"
@@ -35,7 +33,7 @@ function train_data() {
   cat $1* \
   | $CMU_DIR/text2idngram -n 4 -temp $TMP_DIR/ -vocab $TMP_DIR/$$.vocab \
   | $CMU_DIR/idngram2lm -n 4 -vocab $TMP_DIR/$$.vocab -idngram - \
-  -binary $TMP_DIR/MSR.binlm -spec_num 10000000 100000000 1000000000 \
+  -binary $MOD_DIR/Simple4.binlm -spec_num 10000000 100000000 1000000000 \
   && \
   echo "Simple 4-gram model trained successfully"
 
@@ -47,25 +45,43 @@ function test_data() {
   # Using the trained language model, this will evaluate each line of the
   # machine format test file (after removing the question number and brackets
   # using sed), then calculate the score using awk.
-  echo > $TMP_DIR/Simple_ngram.res
-  cat $1/Holmes.machine_format.questions.txt | while read line
+  count=1
+  t_string=""
+
+  echo "Setup..."
+
+  > $RES_DIR/Simple_4gram.res
+
+  while read line
   do
-    echo $line | sed 's/.*) \|\[\|\]//g' > $TMP_DIR/$$.txt
-    score=$(echo "perplexity -text $TMP_DIR/$$.txt" \
-      | $CMU_DIR/evallm -binary $TMP_DIR/MSR.binlm \
-      | grep "Number of" \
-      | awk '\
-            BEGIN {score=0; weight=3} \
-            {score = (score + ($6 * weight)); weight--; } \
-            END {print score}' \
-    )
+    echo $line | sed 's/.*) \|\[\|\]//g' > $TMP_DIR/$$_$count.txt
 
-    echo $score
-    echo $line $score >> $TMP_DIR/Simple_ngram.res
-   
-  done
+    t_string+="perplexity -text $TMP_DIR/$$_$count.txt\n"
+    count=$(($count + 1))
+  done < $1/Holmes.lm_format.questions.txt
 
-  rm $TMP_DIR/$$.txt
+  echo "Evaluating..."
+
+  echo -e $t_string  \
+    | $CMU_DIR/evallm -binary $MOD_DIR/Simple4.binlm \
+    | grep "Number of" \
+    | awk '\
+          BEGIN {score=0; weight=3} \
+          { \
+          score = (score + ($6 * weight)); weight--; \
+          if (weight == -1) { print score; weight=3; score=0; } \
+          } \
+          END {}' \
+    > $TMP_DIR/$$_score.txt
+
+  while read line <&3 && read score <&4
+  do
+    echo -e "$line\t$score" >> $RES_DIR/Simple_4gram.res
+  done 3< $1/Holmes.lm_format.questions.txt 4<$TMP_DIR/$$_score.txt
+
+  rm $TMP_DIR/$$*.txt
+
+  echo "Complete. Output in Simple_ngram.res"
 }
 
 function check_dir() {

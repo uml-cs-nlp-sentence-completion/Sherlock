@@ -5,7 +5,7 @@
                                                                               
  Creation Date : 01-11-2015
                                                                               
- Last Modified : Mon 23 Nov 2015 05:37:53 PM EST
+ Last Modified : Tue 24 Nov 2015 04:53:25 PM EST
                                                                               
  Created By : Renan Campos                                                    
                                                                               
@@ -24,6 +24,8 @@ import argparse
 
 from solution import Solution
 from simple_4gram import simple_4gram
+from smoothed_4gram import smoothed_4gram
+from smoothed_3gram import smoothed_3gram
 
 TRAINING_DATA = "data/Holmes_Training_Data/*.TXT"
 
@@ -58,12 +60,20 @@ def main():
 
   # Solution flags
   parser.add_argument( "--simple-ngram", action="store_true", default=False,
-                       help="Simple-ngram model description here.")
+                       help="Simple-ngram model.")
+  parser.add_argument( "--smoothed-4gram", action="store_true", default=False,
+                       help="ngram model with Good-Turing smoothing.")
+  parser.add_argument( "--smoothed-3gram", action="store_true", default=False,
+                       help="ngram model with Good-Turing smoothing.")
 
   args = parser.parse_args()
 
   if (args.simple_ngram):
-    sol = simple_4gram(args.v) 
+    sol = simple_4gram(args.v)
+  elif (args.smoothed_4gram):
+    sol = smoothed_4gram(args.v)
+  elif (args.smoothed_3gram):
+    sol = smoothed_3gram(args.v)
   else:
     sys.stderr.write("ERROR: No flag specified\n\n")
     parser.print_help()

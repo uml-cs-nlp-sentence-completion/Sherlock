@@ -1,21 +1,27 @@
 #!/usr/bin/python
 
-#Author : Gayas Chowdhury
+'''
+    Author : Gayas Chowdhury
+    
+    Summary:   This program calculate the score for each question
+    It takes 3 parameters as input.
+    -q/--qfile    : path to the questions file prepared by the prepare_qns.py program
+    -m/--model    : path to the trained model prepared by sg_train_v1.py
+    -a/--ansfile  : path to the file to save questions and their score
+    
+    Example usage : python sg_test.py -q ../data/sg_format_questions.txt -m ../data/movel -a ../data/sg_format_answers.txt
+    
+    '''
 
-# Summary:   This program calculate the score for each question
-# It takes 3 parameters as input.
-# -q/--qfile    : path to the questions file prepared by the prepare_qns.py program
-# -m/--model    : path to the trained model prepared by sg_train_v1.py
-# -a/--ansfile  : path to the file to save questions and their score
-#
-# Example usage : python sg_test.py -q ../data/sg_format_questions.txt -m ../data/movel -a ../data/sg_format_answers.txt
 
 from __future__ import print_function
 
 import argparse
 import tools
+import numpy as np
 
 from gensim.models import Word2Vec
+from sklearn.metrics.pairwise import cosine_similarity
 
 #Instance for question
 class Question(object):
@@ -31,13 +37,34 @@ class Question(object):
     
     # Calculate the cossine similarities between missing word and rest of the words in the sentence, and sum all of them
     # Retun the calculated cosine similarity as score
-    def calc_score(self, model):
+    def calc_score1(self, model):
         score = 0
         
         for word in self.__qwords:
             score = score + model.similarity(word, self.__answord)
         
         return score/(len(self.__qwords) + 1)
+    
+    def calc_score(self, model):
+        avgVec  = self.getAvgVec(self.__qwords, model)
+        score   = cosine_similarity(avgVec, model[self.__answord])[0][0]
+        
+        return score
+
+    def getAvgVec(self, words, model):
+        nwords      = 0.
+        featureVec  = np.zeros((tools.SG_NUM_FEATURES,), dtype="float32")
+        
+        index2word_set = set(model.index2word)
+
+        for word in words:
+            if word in index2word_set:
+                nwords = nwords + 1.
+                featureVec = np.add(featureVec, model[word])
+    
+        avgVec = np.divide(featureVec, nwords)
+        
+        return avgVec
 
 #Class for reading questions from file and making Question instance
 class Questions(object):

@@ -5,7 +5,7 @@
                                                                               
  Creation Date : 01-11-2015
                                                                               
- Last Modified : Tue 24 Nov 2015 04:53:25 PM EST
+ Last Modified : Tue 15 Dec 2015 04:07:59 PM EST
                                                                               
  Created By : Renan Campos                                                    
                                                                               
@@ -26,6 +26,7 @@ from solution import Solution
 from simple_4gram import simple_4gram
 from smoothed_4gram import smoothed_4gram
 from smoothed_3gram import smoothed_3gram
+from lsa import lsa
 
 TRAINING_DATA = "data/Holmes_Training_Data/*.TXT"
 
@@ -34,6 +35,9 @@ TEST_DATA = \
 
 EVAL_DATA = \
 "data/MSR_Sentence_Completion_Challenge_V1/Data/Holmes.lm_format.answers.txt"
+
+PRE_DATA= \
+"data/preprocessed/"
 
 def main():
 
@@ -65,6 +69,8 @@ def main():
                        help="ngram model with Good-Turing smoothing.")
   parser.add_argument( "--smoothed-3gram", action="store_true", default=False,
                        help="ngram model with Good-Turing smoothing.")
+  parser.add_argument( "--lsa", action="store_true", default=False,
+                       help="Latent Semantic Analysis")
 
   args = parser.parse_args()
 
@@ -74,6 +80,8 @@ def main():
     sol = smoothed_4gram(args.v)
   elif (args.smoothed_3gram):
     sol = smoothed_3gram(args.v)
+  elif (args.lsa):
+    sol = lsa(args.v)
   else:
     sys.stderr.write("ERROR: No flag specified\n\n")
     parser.print_help()

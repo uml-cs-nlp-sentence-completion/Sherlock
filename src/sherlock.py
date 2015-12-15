@@ -27,6 +27,8 @@ from simple_4gram import simple_4gram
 from smoothed_4gram import smoothed_4gram
 from smoothed_3gram import smoothed_3gram
 from lsa import lsa
+from skipgram_solution import skipgram_solution
+
 
 TRAINING_DATA = "data/Holmes_Training_Data/*.TXT"
 
@@ -72,6 +74,9 @@ def main():
   parser.add_argument( "--lsa", action="store_true", default=False,
                        help="Latent Semantic Analysis")
 
+  parser.add_argument( "--skipgram", action="store_true", default=False,
+                    help="Skip Gram model.")
+
   args = parser.parse_args()
 
   if (args.simple_ngram):
@@ -82,6 +87,8 @@ def main():
     sol = smoothed_3gram(args.v)
   elif (args.lsa):
     sol = lsa(args.v)
+  elif (args.skipgram):
+    sol = skipgram_solution(args.v)
   else:
     sys.stderr.write("ERROR: No flag specified\n\n")
     parser.print_help()

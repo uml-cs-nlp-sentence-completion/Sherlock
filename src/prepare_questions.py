@@ -14,7 +14,6 @@ import re
 import tools
 
 from nltk.tokenize import WordPunctTokenizer
-from gensim.models import Phrases
 
 '''
     Find the missing word and the reaming words.

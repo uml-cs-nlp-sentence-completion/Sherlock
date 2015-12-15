@@ -64,7 +64,7 @@ function test_data() {
   echo -e $t_string  \
     | $CMU_DIR/evallm -binary $MOD_DIR/Smoothed4.binlm \
     | grep "Perplexity" \
-    | awk ' { print $3 } ' \
+    | awk ' { print -$3 } ' \
     | grep -o "[^,]*" \
     > $TMP_DIR/$$_score.txt
 

@@ -39,6 +39,11 @@ Example Usage:
     $./sherlock --smoothed_4gram --test-only model : This will only test the model and will save the results into results folder
     $./sherlock --smoothed_4gram --eval-only : This will run evaluation.
 
+    $./sherlock --lsa : This will run only LSA model including training, testing, and evaluation 
+    $./sherlock --lsa --train-only : This only train the LSA model 
+    $./sherlock --lsa --test-only model : This will only test the model and will save the results into results folder
+    $./sherlock --lsa --eval-only : This will run evaluation.
+
     $./sherlock --skipgram : This will run only skip gram model including training, testing, and evaluation 
     $./sherlock --skipgram --train-only : This only train the skip gram model 
     $./sherlock --skipgram --test-only sg_model : This will only test the model and will save the results into results folder

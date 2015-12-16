@@ -8,6 +8,8 @@
 
 from __future__ import print_function
 
+from math import sqrt
+
 import os
 import sys
 import argparse
@@ -18,6 +20,8 @@ import string
 from nltk.corpus import stopwords
 from nltk.stem.porter import *
 from os import path
+
+from sklearn.metrics.pairwise import pairwise_distances
 
 EMPTY_LIST      = []
 EMPTY_STRING    = ''
@@ -136,3 +140,23 @@ def expand_contraction(text):
     words   = [contractions_list[word] if word in contractions_list else word for word in text]
     
     return ' '.join(words)
+
+def cosine_similarity(X, Y):
+  dot   = 0
+  mag_x = 0
+  mag_y = 0
+
+  if (len(X) != len(Y)):
+    raise(ValueError, "Vector dimensions do not match")
+
+  for i in range(len(X)):
+    dot   += X[i] * Y[i]
+    mag_x += X[i] * X[i]
+    mag_y += Y[i] * Y[i]
+
+  denom = (sqrt(mag_x) * sqrt(mag_y))
+  
+  if (denom == 0):
+    return 0
+
+  return float(dot) / float(denom)

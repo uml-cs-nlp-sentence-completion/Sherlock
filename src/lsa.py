@@ -7,7 +7,7 @@
                                                                               
  Creation Date : 15-12-2015
                                                                               
- Last Modified : Tue 15 Dec 2015 07:15:08 PM EST
+ Last Modified : Tue 15 Dec 2015 08:34:08 PM EST
                                                                               
  Created By : Renan Campos                                                    
                                                                               
@@ -23,7 +23,8 @@ import os
 import numpy as np
 from scipy import linalg
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
-from sklearn.metrics.pairwise import cosine_similarity
+
+from tools import cosine_similarity
 
 import cPickle as pickle
 
@@ -34,7 +35,7 @@ PRE_DATA = "data/preprocessed/"
 TEST = \
 "data/MSR_Sentence_Completion_Challenge_V1/Data/"
 
-MODEL="model/lsa.model"
+MODEL="models/lsa.model"
 
 class _lsa_model:
   def __init__(self, vocab, corpus):
@@ -47,7 +48,7 @@ class _lsa_model:
 
     self.v = CountVectorizer(vocabulary=vocab)
 
-    X = self.v.fit_transform(corpus)
+    X = self.v.fit_transform(corpus).toarray()
 
     transformer = TfidfTransformer()
 
@@ -69,7 +70,9 @@ class _lsa_model:
     # Store approximated document-term Matrix
     self.dt = (U.dot(Sig.dot(Vt))).transpose()
 
-  def cos_similarity(test_sentence, test_word):
+    print self.dt
+
+  def cos_similarity(self, test_sentence, test_word):
     """
       Treat the test sentence as a document,
       Computes the total cosine similarity of each word in the sentence with
@@ -77,11 +80,22 @@ class _lsa_model:
       Returns total
     """
     tot_sim = 0
+    
+    if not self.v.vocabulary.get(test_word):
+      return tot_sim
 
     t_vec = self.dt[self.v.vocabulary.get(test_word)]
+    print test_word
+    print t_vec
 
-    for each in test_sentence: 
-      tot_sim += cosine_similarity(t_vec, self.dt[self.v.vocabulary.get(each)])[0][0]
+    print test_sentence
+    for each in test_sentence.split():
+      print each
+      if not self.v.vocabulary.get(each):
+        continue
+
+      print self.dt[self.v.vocabulary.get(each)] 
+      tot_sim += cosine_similarity(t_vec, self.dt[self.v.vocabulary.get(each)])
 
     return tot_sim
     
@@ -151,11 +165,13 @@ class lsa(Solution):
     vocab = []
   
     for each in temp:
-      vocab.append(temp[:-1])
+      vocab.append(each.strip())
 
     # Create a term-document matrix
     corpus = []
     for each in os.listdir(PRE_DATA):
+      if (each == '.gitignore'):
+        continue
       corpus.append(''.join(open(PRE_DATA + each, "r").read().split('\n')))
 
     # Create model
@@ -182,7 +198,7 @@ class lsa(Solution):
     pkl_file.close()
 
     # Prepare test sentences
-    o = subprocess.call(["python", "prepare_questions.py", "-l", TEST+"Holmes.lm_format.questions.txt", "-mf", TEST+"Holmes.machine_format.questions.txt", "-o", "tmp/questions.txt"])
+    o = subprocess.call(["python", "src/prepare_questions.py", "-l", TEST+"Holmes.lm_format.questions.txt", "-mf", TEST+"Holmes.machine_format.questions.txt", "-o", "tmp/questions.txt"])
     if o == 0:
       print "suceeded! Results file created"
     else:
@@ -192,13 +208,14 @@ class lsa(Solution):
     fi = open("tmp/questions.txt", "r")
     fo = open("results/lsa.res",   "w")
 
-    for line in fi.readline():
+    for line in fi:
+      print line
       t_word     = line.split('\t')[2].strip()
       t_sentence = line.split('\t')[0].split('>')[1].split('<')[0].strip()
 
       score = lsa_mod.cos_similarity(t_sentence, t_word)
 
-      fo.write(line.split('\t')[0].strip() + " " + str(score) + "\n")
+      fo.write(line.split('\t')[0].strip() + '\t' + str(score) + "\n")
 
     fi.close()
     fo.close()

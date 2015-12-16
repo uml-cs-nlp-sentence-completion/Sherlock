@@ -35,7 +35,7 @@ def build_model(sentences, model_name):
     context         = 5     # Context window size
     downsampling    = 1e-3  # Downsample setting for frequent words
    
-    model = Word2Vec(sentences, workers=num_workers, sg = 0, size=num_features, min_count = min_word_count, window = context, sample = downsampling, seed=1)
+    model = Word2Vec(sentences, workers=num_workers, sg = 1, size=num_features, min_count = min_word_count, window = context, sample = downsampling, seed=1)
     model.init_sims(replace=True)
     model.save(model_name)
 

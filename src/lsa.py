@@ -7,7 +7,7 @@
                                                                               
  Creation Date : 15-12-2015
                                                                               
- Last Modified : Tue 15 Dec 2015 07:10:12 PM EST
+ Last Modified : Tue 15 Dec 2015 07:15:08 PM EST
                                                                               
  Created By : Renan Campos                                                    
                                                                               
@@ -67,7 +67,7 @@ class _lsa_model:
     Sig = linalg.diagsvd(s, M, N)
   
     # Store approximated document-term Matrix
-    self.dt = (U.dot(Sig.dot(Vt)))).transpose()
+    self.dt = (U.dot(Sig.dot(Vt))).transpose()
 
   def cos_similarity(test_sentence, test_word):
     """
@@ -182,7 +182,7 @@ class lsa(Solution):
     pkl_file.close()
 
     # Prepare test sentences
-    o = subprocess.call(["python", "prepare_questions.py", "-l", TEST+"Holmes.lm_format.questions.txt", "-mf", TEST+"Holmes.machine_format.questions.txt", "-o", "tmp/questions.txt")])
+    o = subprocess.call(["python", "prepare_questions.py", "-l", TEST+"Holmes.lm_format.questions.txt", "-mf", TEST+"Holmes.machine_format.questions.txt", "-o", "tmp/questions.txt"])
     if o == 0:
       print "suceeded! Results file created"
     else:

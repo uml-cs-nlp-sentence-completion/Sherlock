@@ -7,7 +7,7 @@
                                                                               
  Creation Date : 15-12-2015
                                                                               
- Last Modified : Tue 15 Dec 2015 08:34:08 PM EST
+ Last Modified : Tue 15 Dec 2015 08:37:59 PM EST
                                                                               
  Created By : Renan Campos                                                    
                                                                               
@@ -70,7 +70,6 @@ class _lsa_model:
     # Store approximated document-term Matrix
     self.dt = (U.dot(Sig.dot(Vt))).transpose()
 
-    print self.dt
 
   def cos_similarity(self, test_sentence, test_word):
     """
@@ -85,16 +84,11 @@ class _lsa_model:
       return tot_sim
 
     t_vec = self.dt[self.v.vocabulary.get(test_word)]
-    print test_word
-    print t_vec
 
-    print test_sentence
     for each in test_sentence.split():
-      print each
       if not self.v.vocabulary.get(each):
         continue
 
-      print self.dt[self.v.vocabulary.get(each)] 
       tot_sim += cosine_similarity(t_vec, self.dt[self.v.vocabulary.get(each)])
 
     return tot_sim
@@ -209,7 +203,6 @@ class lsa(Solution):
     fo = open("results/lsa.res",   "w")
 
     for line in fi:
-      print line
       t_word     = line.split('\t')[2].strip()
       t_sentence = line.split('\t')[0].split('>')[1].split('<')[0].strip()
 

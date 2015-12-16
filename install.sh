@@ -10,9 +10,9 @@ wget http://research.microsoft.com/en-us/um/people/gzweig/Pubs/MSR_Sentence_Comp
 
 tar -zxf MSR_Sentence_Completion_Challenge_V1.tgz
 
-#wget http://research.microsoft.com/en-us/um/people/gzweig/Pubs/Holmes_Training_Data.tgz
+wget http://research.microsoft.com/en-us/um/people/gzweig/Pubs/Holmes_Training_Data.tgz
 
-#tar -zxf Holmes_Training_Data.tgz
+tar -zxf Holmes_Training_Data.tgz
 
 rm *.tgz
 

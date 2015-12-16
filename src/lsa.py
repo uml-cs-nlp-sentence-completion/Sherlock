@@ -7,7 +7,7 @@
                                                                               
  Creation Date : 15-12-2015
                                                                               
- Last Modified : Tue 15 Dec 2015 08:37:59 PM EST
+ Last Modified : Tue 15 Dec 2015 11:53:12 PM EST
                                                                               
  Created By : Renan Campos                                                    
                                                                               
@@ -38,7 +38,7 @@ TEST = \
 MODEL="models/lsa.model"
 
 class _lsa_model:
-  def __init__(self, vocab, corpus):
+  def __init__(self, corpus, vocab):
     """
       Create CountVectorizer object,
       Create a tfidf array
@@ -66,7 +66,11 @@ class _lsa_model:
       s[i] = 0
 
     Sig = linalg.diagsvd(s, M, N)
-  
+
+    print U.shape
+    print Sig.shape
+    print Vt.shape
+
     # Store approximated document-term Matrix
     self.dt = (U.dot(Sig.dot(Vt))).transpose()
 
@@ -143,11 +147,11 @@ class lsa(Solution):
     call = ["src/cmu_scripts/make_vocab.sh"]
     for each in os.listdir(PRE_DATA):
       if (each == ".gitignore"):
-        continue
+         continue
       call.append(PRE_DATA + each)
     o=subprocess.call(call)
     if o == 0:
-      print "Preprocessed files built."
+      print "Vocabulary built."
     else:
       print "failed on vocab creation"
       exit(1)
@@ -169,7 +173,7 @@ class lsa(Solution):
       corpus.append(''.join(open(PRE_DATA + each, "r").read().split('\n')))
 
     # Create model
-    lsa_mod = _lsa_model(vocab, corpus)
+    lsa_mod = _lsa_model(corpus, vocab)
 
     # Pickle model
     output = open(MODEL, 'wb')

@@ -36,7 +36,7 @@ class Sentences(object):
     def __iter__(self):
         for fname in self.file_names:
             for line in open(fname):
-                yield line[:-1]
+                yield line.strip()
 
 # Remove punctions from text
 def remove_punctuation(text, especial_puncts = EMPTY_LIST):
